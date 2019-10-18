@@ -70,3 +70,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: MyCustomIcons
+      fonts:
+        - asset: assets/fonts/MyCustomIcons.ttf

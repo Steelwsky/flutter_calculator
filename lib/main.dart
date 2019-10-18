@@ -11,8 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'Calculator',
       theme: ThemeData.dark(),
       home: MyHomePage(title: 'Calculator'),
+
     );
   }
 }
-
-
