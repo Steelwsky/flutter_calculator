@@ -5,8 +5,10 @@ class RoundButtonIcon extends StatelessWidget {
   final Color clrBackground;
   final Color clrFonts;
   final Size size = Size(80.0, 80.0);
+  final Function func;
+  final String str;
 
-  RoundButtonIcon(this.icon, this.clrBackground, this.clrFonts);
+  RoundButtonIcon(this.str, this.icon, this.clrBackground, this.clrFonts, this.func);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,9 @@ class RoundButtonIcon extends StatelessWidget {
         margin: const EdgeInsets.all(4.0),
         child: RawMaterialButton(
           constraints: BoxConstraints.tight(size),
-          onPressed: () {},
+          onPressed: () {
+            func(str);
+          },
           child: new Icon(
             this.icon,
             color: this.clrFonts,

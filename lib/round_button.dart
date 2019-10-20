@@ -5,8 +5,9 @@ class RoundButton extends StatelessWidget {
   final Color clrBackground;
   final Color clrFonts;
   final Size size = Size(80.0, 80.0);
+  final Function func;
 
-  RoundButton(this.str, this.clrBackground, this.clrFonts);
+  RoundButton(this.str, this.clrBackground, this.clrFonts, this.func);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,9 @@ class RoundButton extends StatelessWidget {
         margin: const EdgeInsets.all(4.0),
         child: RawMaterialButton(
           constraints: BoxConstraints.tight(size),
-          onPressed: () {},
+          onPressed: () {
+            func(str);
+          },
           child: new Text(
             "$str",
             style: TextStyle(
