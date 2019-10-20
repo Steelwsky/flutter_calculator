@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_calculator/assets/my_flutter_app_icons.dart';
 import 'dart:developer' as developer;
 import 'package:intl/intl.dart';
+import 'package:intl/number_symbols_data.dart';
+import 'package:intl/number_symbols.dart';
 
 import 'round_button_icon.dart';
 import 'round_button.dart';
@@ -14,6 +16,7 @@ import 'rounded_zero_button.dart';
 //TODO NumberFormat (DecimalFormat) https://api.flutter.dev/flutter/intl/NumberFormat-class.html
 //TODO иконки разных размеров. Как сделать одного???
 //TODO все значения (0-9, AC, мб еще %, +- ...) сделать const.
+//TODO изучить чужие проекты, понять, как правильно записывают функции, как их инициализируют в buttons, а также понять, почему
 
 //final List<Map<String, Color>> _listBack = [
 //  {
@@ -40,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   static const MATHERROR = "Error";
-  static const DECIMALFORMAT = "#,###.#####";
+  static const DECIMALFORMAT = '#,###.#####';
 
   var isLastOfAllNumeric = false;
   var isLastOperator = false;
@@ -58,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   var str = '0';
 
-  String onNumber(number) {
+  void onNumber(number) {
     setState(() {
       if (isAfterEqual) {
         developer.log('isAfterEqual', name: 'onNumber');
@@ -69,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         developer.log("isLastOfAllNumeric", name: "ONNUMBER");
         str = "";
       }
-      if (checkForLastOperator()) {
+      if (checkForLastOperator() == true) {
         developer.log("checkForLastOperator", name: "ONNUMBER");
         str = "";
       }
@@ -83,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void forTvMain(number) {
     setState(() {
       isNumberEmpty = false;
-      developer.log("HEEEEELP", name: "strForTVMain: $strForTVMain");
+      developer.log("HEEEEELP", name: "strForTVMain: $strForTVMain, str: $str");
       if (strForTVMain.length < 9) {
         strForTVMain += number;
         developer.log("HEEEEELP", name: "strForTVMain: $strForTVMain");
@@ -95,26 +98,39 @@ class _MyHomePageState extends State<MyHomePage> {
         final beautyStr = double.parse(strForTVMain);
         developer.log(
           "strForTVMain.toDouble: $beautyStr",
-          name: "STM",
+          name: "STM"
         );
-        str = decimalHelper(beautyStr);
-        developer.log("strForTVMain: $strForTVMain", name: "STM");
-      } else
-        return null;
+//        str = decimalHelper(beautyStr);
+        decimalHelper(beautyStr);
+        developer.log("strForTVMain: $strForTVMain, str: $str", name: "STM");
+      }
+//      else return null;
     });
   }
 
-  String decimalHelper(number) {
-    setState(() {
+  //TODO problema raboti etogo methoda, string ne menyaet format i uhodit v null
+  decimalHelper(number) {
+    developer.log('decimalHelper', name:'$number');
+//    setState(() {
 //  final formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
 //    Intl.defaultLocale = 'en_US'
 
 //  final formatSymbols = new NumberFormat.compact(locale:'fr');
 //  formatSymbols. = ',';
 //  formatSymbols.groupingSeparator = ' ';
-      final _formatter = new NumberFormat(DECIMALFORMAT, 'fr');
-      return _formatter.format(number);
-    });
+      numberFormatSymbols['zz'] = new NumberSymbols(
+        NAME: "zz",
+        DECIMAL_SEP: ',',
+        GROUP_SEP: '\u00A0',
+        EXP_SYMBOL: 'e',
+        PERMILL: '\u2030',
+        INFINITY: '\u221E',
+        NAN: 'NaN',
+        DECIMAL_PATTERN: '# ##0,###',
+        SCIENTIFIC_PATTERN: '#E0',
+      );
+      str = new NumberFormat('#,###.######', 'zz').format(number);
+//    });
   }
 
   bool checkForLastOperator() {
@@ -147,6 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  //TODO Invalid double 7,5
   void onDecimal() {
     setState(() {
       developer.log(
@@ -319,8 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
           {
             if (second != 0.0) {
               firstNumber = (first / second);
-              developer.log("WeAreInside  $first / $second = $firstNumber",
-                  name: "steelwsky");
+              developer.log("WeAreInside  $first / $second = $firstNumber", name: "steelwsky");
             } else
               return MATHERROR;
           }
@@ -330,6 +346,7 @@ class _MyHomePageState extends State<MyHomePage> {
       strForTVMain = firstNumber.toString();
       developer.log("mathEND   $firstNumber", name: "steelwsky");
       final forDecimalHelper = decimalHelper(firstNumber);
+      //TODO forDecimalHelper:null, null.length ?????
       developer.log(
           "forDecimalHelper:$forDecimalHelper, $forDecimalHelper.length",
           name: "STM");
@@ -364,8 +381,9 @@ class _MyHomePageState extends State<MyHomePage> {
               new Row(
                 children: <Widget>[
                   Container(
-                    child: new Text(
-                      str,
+                    child: Text(
+//                      str!=null?str:'0',
+                    '$str',
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         fontSize: 54.0,
@@ -437,6 +455,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       '0', _listBackground[2], _listColorsFonts[1], onNumber),
                   RoundButton(
                       ',', _listBackground[2], _listColorsFonts[1], onNumber),
+                  //TODO '=' - nado ubrat dlya onEqual, a tak je dlya onClear
                   RoundButtonIcon('=',MyCustomIcons.equalsIcon, _listBackground[1],
                       _listColorsFonts[1], onEqual),
                 ],

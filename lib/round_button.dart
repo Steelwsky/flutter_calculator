@@ -16,7 +16,7 @@ class RoundButton extends StatelessWidget {
         child: RawMaterialButton(
           constraints: BoxConstraints.tight(size),
           onPressed: () {
-            func(str);
+            func(this.str);
           },
           child: new Text(
             "$str",
