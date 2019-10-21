@@ -11,7 +11,7 @@ import 'rounded_zero_button.dart';
 
 //TODO сделать весь дизайн:
 //---DONE сделать кастомные иконки с %, +-, / и т.д. --- DONE
-//TODO на кнопки нацепить функции (слизать с kotlincalc) в качестве аргумента при добавлении в layout
+//---DONE на кнопки нацепить функции (слизать с kotlincalc) в качестве аргумента при добавлении в layout
 //TODO понять как правильно располагать виджеты на экране. Какие аналоги gravity есть. Как получить копию дизайна с котлина?
 //TODO NumberFormat (DecimalFormat) https://api.flutter.dev/flutter/intl/NumberFormat-class.html
 //TODO иконки разных размеров. Как сделать одного???
@@ -61,25 +61,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   var str = '0';
 
+  NumberSymbols numberFormatSymbols;
+
   void onNumber(number) {
     setState(() {
-      if (isAfterEqual) {
-        developer.log('isAfterEqual', name: 'onNumber');
-        strForTVMain = "";
-        isAfterEqual = false;
-      }
-      if (!isLastOfAllNumeric) {
-        developer.log("isLastOfAllNumeric", name: "ONNUMBER");
-        str = "";
-      }
-      if (checkForLastOperator() == true) {
-        developer.log("checkForLastOperator", name: "ONNUMBER");
-        str = "";
-      }
-      isLastOperator = false;
-      isFullClear = false;
-      forTvMain(number);
-      isLastOfAllNumeric = true;
+    if (isAfterEqual) {
+      developer.log('isAfterEqual', name: 'onNumber');
+      strForTVMain = "";
+      isAfterEqual = false;
+    }
+    if (!isLastOfAllNumeric) {
+      developer.log("isLastOfAllNumeric", name: "ONNUMBER");
+      str = "";
+    }
+    if (checkForLastOperator() == true) {
+      developer.log("checkForLastOperator", name: "ONNUMBER");
+      str = "";
+    }
+    isLastOperator = false;
+    isFullClear = false;
+    forTvMain(number);
+    isLastOfAllNumeric = true;
     });
   }
 
@@ -96,10 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           str = helper;
         }
         final beautyStr = double.parse(strForTVMain);
-        developer.log(
-          "strForTVMain.toDouble: $beautyStr",
-          name: "STM"
-        );
+        developer.log("strForTVMain.toDouble: $beautyStr", name: "STM");
 //        str = decimalHelper(beautyStr);
         decimalHelper(beautyStr);
         developer.log("strForTVMain: $strForTVMain, str: $str", name: "STM");
@@ -110,134 +109,136 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //TODO problema raboti etogo methoda, string ne menyaet format i uhodit v null
   decimalHelper(number) {
-    developer.log('decimalHelper', name:'$number');
-//    setState(() {
+    developer.log('decimalHelper', name: '$number');
+    setState(() {
 //  final formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
-//    Intl.defaultLocale = 'en_US'
-
+//   Intl.defaultLocale = 'en_US'
 //  final formatSymbols = new NumberFormat.compact(locale:'fr');
 //  formatSymbols. = ',';
 //  formatSymbols.groupingSeparator = ' ';
-      numberFormatSymbols['zz'] = new NumberSymbols(
-        NAME: "zz",
-        DECIMAL_SEP: ',',
-        GROUP_SEP: '\u00A0',
-        EXP_SYMBOL: 'e',
-        PERMILL: '\u2030',
-        INFINITY: '\u221E',
-        NAN: 'NaN',
-        DECIMAL_PATTERN: '# ##0,###',
-        SCIENTIFIC_PATTERN: '#E0',
-      );
-      str = new NumberFormat('#,###.######', 'zz').format(number);
-//    });
+
+//    numberFormatSymbols = new NumberSymbols(
+//      NAME: "zz",
+//      DECIMAL_SEP: ',',
+//      GROUP_SEP: '\u00A0',
+//      EXP_SYMBOL: 'e',
+//      PERMILL: '\u2030',
+//      INFINITY: '\u221E',
+//      NAN: 'NaN',
+//      DECIMAL_PATTERN: '# ##0,###',
+//      SCIENTIFIC_PATTERN: '#E0',
+//    );
+    final f = new NumberFormat('#,###.######', 'fr');
+    str = f.format(number);
+    });
   }
 
   bool checkForLastOperator() {
-    setState(() {
-      if (isLastOperator) {
-        developer.log("isNotEmpty is done", name: "stm");
-        tryError = false;
-        saveNumber();
-        developer.log("FN: $firstNumber or SN:$secondNumber", name: "stm");
-        return true;
-      } else
-        return false;
-    });
+//    setState(() {
+    if (isLastOperator) {
+      developer.log("isNotEmpty is done", name: "stm");
+      tryError = false;
+      saveNumber();
+      developer.log("FN: $firstNumber or SN:$secondNumber", name: "stm");
+      return true;
+    } else
+      return false;
+//    });
   }
 
   void saveNumber() {
     setState(() {
-      developer.log(
-          "strMain: $strForTVMain and FN:$firstNumber, SN:$secondNumber",
-          name: "BEFORE SAVENUMBER");
-      if (isFirstNumber) {
-        if (strForTVMain == "") {
-          strForTVMain = "0";
-        }
-        firstNumber = double.parse(strForTVMain);
-        developer.log("FN: $firstNumber", name: "SAVENUMBER");
-        strForTVMain = "";
-        isFirstNumber = false;
+    developer.log(
+        "strMain: $strForTVMain and FN:$firstNumber, SN:$secondNumber",
+        name: "BEFORE SAVENUMBER");
+    if (isFirstNumber) {
+      if (strForTVMain == "") {
+        strForTVMain = "0";
       }
+      firstNumber = double.parse(strForTVMain);
+      developer.log("FN: $firstNumber", name: "SAVENUMBER");
+      strForTVMain = "";
+      isFirstNumber = false;
+    }
     });
   }
 
   //TODO Invalid double 7,5
   void onDecimal() {
     setState(() {
-      developer.log(
-          "isNumberEmpty :$isNumberEmpty and strFor: $strForTVMain, isLastOfAllNumeric: $isLastOfAllNumeric, isDPhere: $isDPhere",
+    developer.log(
+        "isNumberEmpty :$isNumberEmpty and strFor: $strForTVMain, isLastOfAllNumeric: $isLastOfAllNumeric, isDPhere: $isDPhere",
+        name: "onDecimal");
+    if (isAfterEqual) {
+      onClear();
+    }
+    if (isNumberEmpty) {
+//        tvMain.append((view as Button).text)
+      str += ',';
+      strForTVMain = "0.";
+      isDPhere = true;
+      isNumberEmpty = false;
+      return null;
+    }
+    // pri 0 + 0,75 = 0,75 = 75
+    if (checkForLastOperator()) {
+      developer.log("checkForLastOperator, isNumberEmpty: $isNumberEmpty",
           name: "onDecimal");
-      if (isAfterEqual) {
-        onClear();
-      }
-      if (isNumberEmpty) {
+      str = "0,";
+      strForTVMain = "0.";
+      isLastOperator = false;
+      // postavil isFirstNumber = false i teper posle onCleat eta tema ne rabotaet ??? 10.10.19 - hz o chem eto bilo, vrode pofiksil
+      isFirstNumber = false;
+      return null;
+    }
+    // isLastOfAllNumeric нужен, иначе крашится при ", ="
+    if (isLastOfAllNumeric && !isDPhere) {
 //        tvMain.append((view as Button).text)
-        str += ',';
-        strForTVMain = "0.";
-        isDPhere = true;
-        isNumberEmpty = false;
-      }
-      // pri 0 + 0,75 = 0,75 = 75
-      if (checkForLastOperator()) {
-        developer.log("checkForLastOperator, isNumberEmpty: $isNumberEmpty",
-            name: "onDecimal");
-        str = "0,";
-        strForTVMain = "0.";
-        isLastOperator = false;
-        // postavil isFirstNumber = false i teper posle onCleat eta tema ne rabotaet ??? 10.10.19 - hz o chem eto bilo, vrode pofiksil
-        isFirstNumber = false;
-        return null;
-      }
-      // isLastOfAllNumeric нужен, иначе крашится при ", ="
-      if (isLastOfAllNumeric && !isDPhere) {
-//        tvMain.append((view as Button).text)
-        str += ',';
-        strForTVMain += ".";
-        developer.log("strForTVMain: $strForTVMain", name: "HEEEEELP");
-        isDPhere = true;
-      } else
-        return null;
+      str += ',';
+      strForTVMain += ".";
+      developer.log("strForTVMain: $strForTVMain", name: "HEEEEELP");
+      isDPhere = true;
+    } else
+      return null;
     });
   }
 
   void onPercentage() {
     setState(() {
-      isPercentage = true;
-      if (isFirstNumber) {
-        isFirstNumber = false;
-        secondNumber = 0.01;
-        newOpr = "*";
-        onEqual();
+    isPercentage = true;
+    if (isFirstNumber) {
+      isFirstNumber = false;
+      secondNumber = 0.01;
+      newOpr = "*";
+      onEqual();
+    } else {
+      if (newOpr == "+" || newOpr == "-") {
+        secondNumber = firstNumber * double.parse(strForTVMain) * 0.01;
+        developer.log("onPercentage, else +++ -> SN: $secondNumber",
+            name: "STM");
       } else {
-        if (newOpr == "+" || newOpr == "-") {
-          secondNumber = firstNumber * double.parse(strForTVMain) * 0.01;
-          developer.log("onPercentage, else +++ -> SN: $secondNumber",
-              name: "STM");
-        } else {
-          secondNumber = double.parse(strForTVMain) * 0.01;
-          developer.log("onPercentage, else *** -> SN: $secondNumber",
-              name: "STM");
-        }
-        str = decimalHelper(secondNumber);
+        secondNumber = double.parse(strForTVMain) * 0.01;
+        developer.log("onPercentage, else *** -> SN: $secondNumber",
+            name: "STM");
       }
+      str = decimalHelper(secondNumber);
+    }
     });
   }
 
   void onPlusMinus() {
     setState(() {
-      if (strForTVMain.isEmpty) {
-        return null;
-      }
+    if (strForTVMain.isEmpty) {
+      return null;
+    }
 //  strForTVMain = if (strForTVMain.contains(".")) {
-      if (strForTVMain.contains(".")) {
-        strForTVMain = (double.parse(strForTVMain) * -1).toString();
-      } else {
-        strForTVMain = (int.parse(strForTVMain) * -1).toString();
-      }
-      developer.log("strForTVMAIN: $strForTVMain", name: "ONPLUSMINUS");
-      str = decimalHelper(double.parse(strForTVMain));
+    if (strForTVMain.contains(".")) {
+      strForTVMain = (double.parse(strForTVMain) * -1).toString();
+    } else {
+      strForTVMain = (int.parse(strForTVMain) * -1).toString();
+    }
+    developer.log("strForTVMAIN: $strForTVMain", name: "ONPLUSMINUS");
+    str = decimalHelper(double.parse(strForTVMain));
     });
   }
 
@@ -269,6 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void onEqual() {
+    setState(() {
     developer.log("onEqual INIT", name: "STM");
     if (isFullClear && isNumberEmpty) {
       strForTVMain = firstNumber.toString();
@@ -287,7 +289,8 @@ class _MyHomePageState extends State<MyHomePage> {
       developer.log(
           "BEFORE MATHFUN newOpr: $newOpr  firstNumber: $firstNumber  secondNumber: $secondNumber",
           name: "STM");
-      str = math(newOpr, firstNumber, secondNumber);
+//      str = math(newOpr, firstNumber, secondNumber);
+      math(newOpr, firstNumber, secondNumber);
       newOpr = "";
       isLastOfAllNumeric = false;
       isFirstNumber = true;
@@ -305,9 +308,12 @@ class _MyHomePageState extends State<MyHomePage> {
       developer.log("tryError is now FALSE", name: 'STM');
       onEqual();
     }
+    });
   }
 
-  String math(operation, first, second) {
+//  String math(operation, first, second) {
+
+    void math(operation, first, second) {
     setState(() {
       developer.log("mathINIT, newOpr is: $newOpr", name: "steelwsky");
       switch (operation) {
@@ -336,9 +342,10 @@ class _MyHomePageState extends State<MyHomePage> {
           {
             if (second != 0.0) {
               firstNumber = (first / second);
-              developer.log("WeAreInside  $first / $second = $firstNumber", name: "steelwsky");
+              developer.log("WeAreInside  $first / $second = $firstNumber",
+                  name: "steelwsky");
             } else
-              return MATHERROR;
+               str = MATHERROR;
           }
           break;
       }
@@ -350,7 +357,8 @@ class _MyHomePageState extends State<MyHomePage> {
       developer.log(
           "forDecimalHelper:$forDecimalHelper, $forDecimalHelper.length",
           name: "STM");
-      return forDecimalHelper;
+//      return forDecimalHelper;
+    str = forDecimalHelper;
     });
   }
 
@@ -383,7 +391,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
                     child: Text(
 //                      str!=null?str:'0',
-                    '$str',
+                      '$str',
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         fontSize: 54.0,
@@ -405,8 +413,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       _listBackground[0], _listColorsFonts[0], onPlusMinus),
                   RoundButtonIcon('', MyCustomIcons.percentSecIcon,
                       _listBackground[0], _listColorsFonts[0], onPercentage),
-                  RoundButtonIcon('/', MyCustomIcons.divideIcon, _listBackground[1],
-                      _listColorsFonts[1], onOperator),
+                  RoundButtonIcon('/', MyCustomIcons.divideIcon,
+                      _listBackground[1], _listColorsFonts[1], onOperator),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
@@ -431,8 +439,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       '5', _listBackground[2], _listColorsFonts[1], onNumber),
                   RoundButton(
                       '6', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButtonIcon('-', MyCustomIcons.minusIcon, _listBackground[1],
-                      _listColorsFonts[1], onOperator),
+                  RoundButtonIcon('-', MyCustomIcons.minusIcon,
+                      _listBackground[1], _listColorsFonts[1], onOperator),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
@@ -454,10 +462,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ZeroButton(
                       '0', _listBackground[2], _listColorsFonts[1], onNumber),
                   RoundButton(
-                      ',', _listBackground[2], _listColorsFonts[1], onNumber),
+                      '.', _listBackground[2], _listColorsFonts[1], onNumber),
                   //TODO '=' - nado ubrat dlya onEqual, a tak je dlya onClear
-                  RoundButtonIcon('=',MyCustomIcons.equalsIcon, _listBackground[1],
-                      _listColorsFonts[1], onEqual),
+                  RoundButtonIcon('=', MyCustomIcons.equalsIcon,
+                      _listBackground[1], _listColorsFonts[1], onEqual),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               )

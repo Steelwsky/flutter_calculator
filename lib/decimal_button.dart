@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class RoundButton extends StatelessWidget {
+class DecimalButton extends StatelessWidget {
   final String str;
   final Color clrBackground;
   final Color clrFonts;
   final Size size = Size(80.0, 80.0);
   final Function func;
 
-  RoundButton(this.str, this.clrBackground, this.clrFonts, this.func);
+  DecimalButton(this.str, this.clrBackground, this.clrFonts, this.func);
 
   @override
   Widget build(BuildContext context) {
