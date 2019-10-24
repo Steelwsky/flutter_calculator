@@ -10,6 +10,7 @@ class ZeroButton extends StatelessWidget {
 
   ZeroButton(this.str, this.clrBackground, this.clrFonts, this.func);
 
+
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -20,7 +21,7 @@ class ZeroButton extends StatelessWidget {
             func(str);
           },
           child: new Text(
-            "$str",
+            "0",
             textAlign: TextAlign.start,
             style: TextStyle(
                 fontSize: 36, color: clrFonts, fontWeight: FontWeight.w500),

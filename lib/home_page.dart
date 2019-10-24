@@ -18,6 +18,8 @@ import 'rounded_zero_button.dart';
 //TODO все значения (0-9, AC, мб еще %, +- ...) сделать const.
 //TODO изучить чужие проекты, понять, как правильно записывают функции, как их инициализируют в buttons, а также понять, почему
 
+//TODO изменить смысл str, а именно нужно разделить str и
+
 //final List<Map<String, Color>> _listBack = [
 //  {
 //    'lightGrey': Color.fromARGB(255, 165, 165, 165),
@@ -60,6 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
   var strForTVMain = "";
 
   var str = '0';
+
+  var ppp ='';
 
   NumberSymbols numberFormatSymbols;
 
@@ -170,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
         "isNumberEmpty :$isNumberEmpty and strFor: $strForTVMain, isLastOfAllNumeric: $isLastOfAllNumeric, isDPhere: $isDPhere",
         name: "onDecimal");
     if (isAfterEqual) {
-      onClear();
+      onClear(ppp);
     }
     if (isNumberEmpty) {
 //        tvMain.append((view as Button).text)
@@ -242,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void onClear() {
+  void onClear(ppp) {
     setState(() {
       secondNumber = 0.0;
       str = "0";
@@ -282,7 +286,7 @@ class _MyHomePageState extends State<MyHomePage> {
       developer.log("onEqual !isFirstNumber", name: "STM");
     }
     if (strForTVMain == ("")) {
-      onClear();
+      onClear(ppp);
       developer.log("strTVMain = null, onEqual EXIT", name: "STM");
     }
     if (!tryError) {
@@ -391,6 +395,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
                     child: Text(
 //                      str!=null?str:'0',
+                    //TODO наверное здесь должно выводиться что-то другое, не $str.
                       '$str',
                       textAlign: TextAlign.right,
                       style: TextStyle(
@@ -409,7 +414,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   RoundButton(
                       'AC', _listBackground[0], _listColorsFonts[0], onClear),
-                  RoundButtonIcon('AC', MyCustomIcons.plusMinusIcon,
+                  RoundButtonIcon('plusminus', MyCustomIcons.plusMinusIcon,
                       _listBackground[0], _listColorsFonts[0], onPlusMinus),
                   RoundButtonIcon('', MyCustomIcons.percentSecIcon,
                       _listBackground[0], _listColorsFonts[0], onPercentage),
