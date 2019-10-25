@@ -12,25 +12,16 @@ import 'rounded_zero_button.dart';
 
 //TODO как было бы лучше, один виджет кнопки, но с ненужными аргументами в методах, или много похожих виджетов, но порядок с методами? Разные виджеты могут помочь с размерами иконок, наверн.
 //TODO сделать разные виджеты
+//TODO textview 999 999 999 999 999 - поместить большие числа на одной строке
 
 //TODO сделать весь дизайн:
 //---DONE сделать кастомные иконки с %, +-, / и т.д. --- DONE
 //---DONE на кнопки нацепить функции (слизать с kotlincalc) в качестве аргумента при добавлении в layout
 //TODO понять как правильно располагать виджеты на экране. Какие аналоги gravity есть. Как получить копию дизайна с котлина?
-//TODO NumberFormat (DecimalFormat) https://api.flutter.dev/flutter/intl/NumberFormat-class.html
-//TODO иконки разных размеров. Как сделать одного???
+//---DONE NumberFormat (DecimalFormat) https://api.flutter.dev/flutter/intl/NumberFormat-class.html
+//TODO иконки разных размеров. Как сделать одного??? Разные виджеты видимо
 //TODO все значения (0-9, AC, мб еще %, +- ...) сделать const.
 //TODO изучить чужие проекты, понять, как правильно записывают функции, как их инициализируют в buttons, а также понять, почему
-
-//TODO изменить смысл str, а именно нужно разделить str и
-
-//final List<Map<String, Color>> _listBack = [
-//  {
-//    'lightGrey': Color.fromARGB(255, 165, 165, 165),
-//    'yellow': Color.fromARGB(255, 254, 149, 2),
-//    'darkGrey': Color.fromARGB(255, 51, 51, 51)
-//  }
-//];
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -367,7 +358,9 @@ class _MyHomePageState extends State<MyHomePage> {
 //      final forDecimalHelper = decimalHelper(firstNumber);
       final _forDecimalHelper = decimalHelper(firstNumber);
       //---DONE forDecimalHelper:null, null.length ????? - убрал str = forDecimalHelper
-      developer.log("forDecimalHelper:$_forDecimalHelper, $_forDecimalHelper.length", name: "STM");
+      developer.log(
+          "forDecimalHelper:$_forDecimalHelper, $_forDecimalHelper.length",
+          name: "STM");
 //      return forDecimalHelper;
     });
   }
@@ -399,20 +392,21 @@ class _MyHomePageState extends State<MyHomePage> {
               new Row(
                 children: <Widget>[
                   Container(
-                    child: Text(
-//                      str!=null?str:'0',
-                      //TODO наверное здесь должно выводиться что-то другое, не $str.
-                      '$str',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        fontSize: 54.0,
-                        color: Colors.white,
+//                    child: FittedBox(
+//                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        '$str',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontSize: 60.0,
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
                       ),
-                      maxLines: 1,
-                    ),
+//                    ),
                     alignment: Alignment.centerRight,
-                    padding: EdgeInsets.only(top: 140, right: 16),
-                  )
+                    padding: EdgeInsets.only(top: 134, right: 16),
+                  ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.end,
               ),
@@ -437,7 +431,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       '8', _listBackground[2], _listColorsFonts[1], onNumber),
                   RoundButton(
                       '9', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButtonIcon('*', Icons.close, _listBackground[1],
+                  RoundButtonIcon('*', Icons.clear, _listBackground[1],
                       _listColorsFonts[1], onOperator),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
