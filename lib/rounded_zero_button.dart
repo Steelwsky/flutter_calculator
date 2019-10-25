@@ -21,7 +21,7 @@ class ZeroButton extends StatelessWidget {
             func(str);
           },
           child: new Text(
-            "0",
+            '$str',
             textAlign: TextAlign.start,
             style: TextStyle(
                 fontSize: 36, color: clrFonts, fontWeight: FontWeight.w500),
