@@ -13,6 +13,7 @@ import 'rounded_zero_button.dart';
 //TODO как было бы лучше, один виджет кнопки, но с ненужными аргументами в методах, или много похожих виджетов, но порядок с методами? Разные виджеты могут помочь с размерами иконок, наверн.
 //TODO сделать разные виджеты
 //TODO textview 999 999 999 999 999 - поместить большие числа на одной строке
+//TODO создать для кнопок свой класс и вместить сюда provider.
 
 //TODO сделать весь дизайн:
 //---DONE сделать кастомные иконки с %, +-, / и т.д. --- DONE
@@ -21,7 +22,7 @@ import 'rounded_zero_button.dart';
 //---DONE NumberFormat (DecimalFormat) https://api.flutter.dev/flutter/intl/NumberFormat-class.html
 //TODO иконки разных размеров. Как сделать одного??? Разные виджеты видимо
 //TODO все значения (0-9, AC, мб еще %, +- ...) сделать const.
-//TODO изучить чужие проекты, понять, как правильно записывают функции, как их инициализируют в buttons, а также понять, почему
+//TODO изучить чужие проекты, понять, как правильно записывают функции, как их инициализируют в buttons, а также понять, почему --- IN PROCESS
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -55,14 +56,15 @@ class _MyHomePageState extends State<MyHomePage> {
   var isNumberEmpty = true;
   var isFullClear = false;
   var strForTVMain = "";
-
+// str - String для UI
   var str = '0';
 
+//TODO ppp - просто заглушка, причем плохая, нужно переделывать, и сделать без нее (необходимо для Buttons ввести несколько конструкторов)
   var ppp = '';
 
 //  NumberSymbols numberFormatSymbols;
 
-  void onNumber(strNumber) {
+  void onNumber(String strNumber) {
     setState(() {
       if (isAfterEqual) {
         developer.log('isAfterEqual', name: 'onNumber');
@@ -84,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void forTvMain(strNumber) {
+  void forTvMain(String strNumber) {
     isNumberEmpty = false;
     developer.log("strForTVMain: $strForTVMain, str: $str",
         name: "forTVMain INIT");
@@ -92,7 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
       if (strForTVMain.length < 9) {
         strForTVMain += strNumber;
 //        developer.log("HEEEEELP", name: "strForTVMain: $strForTVMain");
-        //TODO sdealt kak to return, no v dartehz kak eto.
         if (strForTVMain.contains(".")) {
           final helper = strForTVMain.replaceAll(".", ",");
           developer.log("helper.toString:$helper", name: "FORTVMAIN");
@@ -110,8 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  //TODO problema raboti etogo methoda, string ne menyaet format i uhodit v null
-  decimalHelper(number) {
+  //---DONE problema raboti etogo methoda, string ne menyaet format i uhodit v null
+  decimalHelper(double number) {
     developer.log('number before is: $number', name: 'decimalHelper');
     numberFormatSymbols['zz'] = new NumberSymbols(
       NAME: "zz",
@@ -169,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // ---DONE Invalid double 7,5 ---DONE
-  void onDecimal(string) {
+  void onDecimal(String string) {
     setState(() {
       developer.log(
           "isNumberEmpty :$isNumberEmpty and strFor: $strForTVMain, isLastOfAllNumeric: $isLastOfAllNumeric, isDPhere: $isDPhere",
@@ -208,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void onPercentage() {
+  void onPercentage(ppp) {
     setState(() {
       isPercentage = true;
       if (isFirstNumber) {
@@ -226,12 +227,13 @@ class _MyHomePageState extends State<MyHomePage> {
           developer.log("onPercentage, else *** -> SN: $secondNumber",
               name: "STM");
         }
-        str = decimalHelper(secondNumber);
+//        str = decimalHelper(secondNumber);
+        decimalHelper(secondNumber);
       }
     });
   }
 
-  void onPlusMinus() {
+  void onPlusMinus(ppp) {
     setState(() {
       if (strForTVMain.isEmpty) {
         return null;
@@ -243,11 +245,12 @@ class _MyHomePageState extends State<MyHomePage> {
         strForTVMain = (int.parse(strForTVMain) * -1).toString();
       }
       developer.log("strForTVMAIN: $strForTVMain", name: "ONPLUSMINUS");
-      str = decimalHelper(double.parse(strForTVMain));
+//      str = decimalHelper(double.parse(strForTVMain));
+      decimalHelper(double.parse(strForTVMain));
     });
   }
 
-  void onClear(ppp) {
+  void onClear(String ppp) {
     setState(() {
       secondNumber = 0.0;
       str = "0";
@@ -316,7 +319,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void math(operation, first, second) {
+  void math(String operation, double first, double second) {
     setState(() {
       developer.log("mathINIT, newOpr is: $newOpr", name: "steelwsky");
       switch (operation) {
@@ -366,7 +369,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 //hz kak tut
-  void onOperator(operator) {
+  void onOperator(String operator) {
     setState(() {
       isDPhere = false;
       isLastOperator = true;
@@ -394,21 +397,22 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
 //                    child: FittedBox(
 //                      fit: BoxFit.fitWidth,
-                      child: Text(
-                        '$str',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: 60.0,
-                          color: Colors.white,
-                        ),
-                        maxLines: 1,
+                    child: Text(
+                      '$str',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: 60.0,
+                        color: Colors.white,
                       ),
+                      maxLines: 1,
+                    ),
 //                    ),
                     alignment: Alignment.centerRight,
                     padding: EdgeInsets.only(top: 134, right: 16),
                   ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
               ),
               Row(
                 children: <Widget>[
