@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class EqualButton extends StatelessWidget {
+class OperatorButton extends StatelessWidget {
+  OperatorButton(this.sizeIcon, this.str, this.icon, this.clrBackground, this.clrFonts, this.func);
   final IconData icon;
   final Color clrBackground;
   final Color clrFonts;
   final Size size = Size(80.0, 80.0);
   final Function func;
-
-
-  EqualButton(this.icon, this.clrBackground, this.clrFonts, this.func);
+  final String str;
+  final double sizeIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +17,12 @@ class EqualButton extends StatelessWidget {
         child: RawMaterialButton(
           constraints: BoxConstraints.tight(size),
           onPressed: () {
-            func();
+            func(str);
           },
           child: new Icon(
             this.icon,
             color: this.clrFonts,
-            size: 24,
+            size: sizeIcon,
           ),
           shape: CircleBorder(),
           elevation: 2.0,
@@ -31,4 +31,3 @@ class EqualButton extends StatelessWidget {
         ));
   }
 }
-

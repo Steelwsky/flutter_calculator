@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calculator/assets/my_flutter_app_icons.dart';
-import 'package:flutter_calculator/equals_button.dart';
+import 'package:flutter_calculator/widgets/clear_button.dart';
 import 'dart:developer' as developer;
 import 'package:intl/intl.dart';
 import 'package:intl/number_symbols_data.dart';
 import 'package:intl/number_symbols.dart';
 
-import 'round_button_icon.dart';
-import 'round_button.dart';
-import 'rounded_zero_button.dart';
+import 'widgets/ic_operator_button.dart';
+import 'widgets/string_button.dart';
+import 'widgets/zero_button.dart';
+import 'widgets/ic_none_oper_button.dart';
 
-//TODO как было бы лучше, один виджет кнопки, но с ненужными аргументами в методах, или много похожих виджетов, но порядок с методами? Разные виджеты могут помочь с размерами иконок, наверн.
-//TODO сделать разные виджеты
+//TODO отдельную страницу с историей расчетов. Переход боковым свайпом по любой части экрана. На втором экране будет кнопка сброса истории.
+//TODO сохранение str при тапе на textview.
+//TODO конкретный operator_button светить другим цветом, если последнее нажатие - этот оператор
+
+//---DONEкак было бы лучше, один виджет кнопки, но с ненужными аргументами в методах, или много похожих виджетов, но порядок с методами? Разные виджеты могут помочь с размерами иконок, наверн.
+//---DONE сделать разные виджеты
 //TODO textview 999 999 999 999 999 - поместить большие числа на одной строке
-//TODO создать для кнопок свой класс и вместить сюда provider.
-
-//TODO сделать весь дизайн:
+//TODO создать для кнопок свой класс и вместить сюда provider.???????????
 //---DONE сделать кастомные иконки с %, +-, / и т.д. --- DONE
 //---DONE на кнопки нацепить функции (слизать с kotlincalc) в качестве аргумента при добавлении в layout
-//TODO понять как правильно располагать виджеты на экране. Какие аналоги gravity есть. Как получить копию дизайна с котлина?
+//---ALMOST_DONE понять как правильно располагать виджеты на экране. Какие аналоги gravity есть. Как получить копию дизайна с котлина?
 //---DONE NumberFormat (DecimalFormat) https://api.flutter.dev/flutter/intl/NumberFormat-class.html
-//TODO иконки разных размеров. Как сделать одного??? Разные виджеты видимо
-//TODO все значения (0-9, AC, мб еще %, +- ...) сделать const.
+//---DONE иконки разных размеров. Как сделать одного??? Разные виджеты видимо
+//TODO все значения (0-9, AC, мб еще %, +- ...) сделать const. ---- Не помню, что я под этим подразумевал.
 //TODO изучить чужие проекты, понять, как правильно записывают функции, как их инициализируют в buttons, а также понять, почему --- IN PROCESS
 
 class MyHomePage extends StatefulWidget {
@@ -56,15 +59,15 @@ class _MyHomePageState extends State<MyHomePage> {
   var isNumberEmpty = true;
   var isFullClear = false;
   var strForTVMain = "";
+
 // str - String для UI
   var str = '0';
 
-//TODO ppp - просто заглушка, причем плохая, нужно переделывать, и сделать без нее (необходимо для Buttons ввести несколько конструкторов)
-  var ppp = '';
-
-//  NumberSymbols numberFormatSymbols;
+  final List<String> _listClear = const ['C', 'AC'];
+  var clear = 'AC';
 
   void onNumber(String strNumber) {
+    clear = _listClear[0];
     setState(() {
       if (isAfterEqual) {
         developer.log('isAfterEqual', name: 'onNumber');
@@ -107,11 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
         decimalHelper(beautyStr);
 //        developer.log("after decimalHelper strForTVMain: $strForTVMain, str: $str", name: "forTVMain");
       }
-//      else return null;
     });
   }
 
-  //---DONE problema raboti etogo methoda, string ne menyaet format i uhodit v null
   decimalHelper(double number) {
     developer.log('number before is: $number', name: 'decimalHelper');
     numberFormatSymbols['zz'] = new NumberSymbols(
@@ -140,7 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool checkForLastOperator() {
-//    setState(() {
     if (isLastOperator) {
       developer.log("isNotEmpty is done", name: "stm");
       tryError = false;
@@ -149,7 +149,6 @@ class _MyHomePageState extends State<MyHomePage> {
       return true;
     } else
       return false;
-//    });
   }
 
   void saveNumber() {
@@ -176,30 +175,26 @@ class _MyHomePageState extends State<MyHomePage> {
           "isNumberEmpty :$isNumberEmpty and strFor: $strForTVMain, isLastOfAllNumeric: $isLastOfAllNumeric, isDPhere: $isDPhere",
           name: "onDecimal");
       if (isAfterEqual) {
-        onClear(ppp);
+        onClear();
       }
       if (isNumberEmpty) {
-//        tvMain.append((view as Button).text)
         str += ',';
         strForTVMain = "0.";
         isDPhere = true;
         isNumberEmpty = false;
         return null;
       }
-      // pri 0 + 0,75 = 0,75 = 75
       if (checkForLastOperator()) {
         developer.log("checkForLastOperator, isNumberEmpty: $isNumberEmpty",
             name: "onDecimal");
         str = "0,";
         strForTVMain = "0.";
         isLastOperator = false;
-        // postavil isFirstNumber = false i teper posle onCleat eta tema ne rabotaet ??? 10.10.19 - hz o chem eto bilo, vrode pofiksil
         isFirstNumber = false;
         return null;
       }
       // isLastOfAllNumeric нужен, иначе крашится при ", ="
       if (isLastOfAllNumeric && !isDPhere) {
-//        tvMain.append((view as Button).text)
         str += ',';
         strForTVMain += ".";
         developer.log("strForTVMain: $strForTVMain", name: "HEEEEELP");
@@ -227,36 +222,33 @@ class _MyHomePageState extends State<MyHomePage> {
           developer.log("onPercentage, else *** -> SN: $secondNumber",
               name: "STM");
         }
-//        str = decimalHelper(secondNumber);
         decimalHelper(secondNumber);
       }
     });
   }
 
-  void onPlusMinus(ppp) {
+  void onPlusMinus() {
     setState(() {
       if (strForTVMain.isEmpty) {
         return null;
       }
-//  strForTVMain = if (strForTVMain.contains(".")) {
       if (strForTVMain.contains(".")) {
         strForTVMain = (double.parse(strForTVMain) * -1).toString();
       } else {
         strForTVMain = (int.parse(strForTVMain) * -1).toString();
       }
       developer.log("strForTVMAIN: $strForTVMain", name: "ONPLUSMINUS");
-//      str = decimalHelper(double.parse(strForTVMain));
       decimalHelper(double.parse(strForTVMain));
     });
   }
 
-  void onClear(String ppp) {
+  void onClear() {
     setState(() {
       secondNumber = 0.0;
       str = "0";
       isDPhere = false;
       strForTVMain = "";
-//    buttonAC.text = getString(R.string.ac);
+      clear = _listClear[1];
       isNumberEmpty = true;
       isPercentage = false;
       developer.log("isFullClear: $isFullClear", name: "onClear");
@@ -269,7 +261,6 @@ class _MyHomePageState extends State<MyHomePage> {
         newOpr = "";
         tryError = true;
         isAfterEqual = false;
-//      tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60f)
         developer.log("**********************CLEARED**********************",
             name: "steelwsky");
       }
@@ -290,14 +281,13 @@ class _MyHomePageState extends State<MyHomePage> {
         developer.log("onEqual !isFirstNumber", name: "STM");
       }
       if (strForTVMain == ("")) {
-        onClear(ppp);
+        onClear();
         developer.log("strTVMain = null, onEqual EXIT", name: "STM");
       }
       if (!tryError) {
         developer.log(
             "BEFORE MATHFUN newOpr: $newOpr  firstNumber: $firstNumber  secondNumber: $secondNumber",
             name: "STM");
-//      str = math(newOpr, firstNumber, secondNumber);
         math(newOpr, firstNumber, secondNumber);
         newOpr = "";
         isLastOfAllNumeric = false;
@@ -358,17 +348,14 @@ class _MyHomePageState extends State<MyHomePage> {
       isFirstNumber = false;
       strForTVMain = firstNumber.toString();
       developer.log("mathEND   $firstNumber", name: "steelwsky");
-//      final forDecimalHelper = decimalHelper(firstNumber);
       final _forDecimalHelper = decimalHelper(firstNumber);
       //---DONE forDecimalHelper:null, null.length ????? - убрал str = forDecimalHelper
       developer.log(
           "forDecimalHelper:$_forDecimalHelper, $_forDecimalHelper.length",
           name: "STM");
-//      return forDecimalHelper;
     });
   }
 
-//hz kak tut
   void onOperator(String operator) {
     setState(() {
       isDPhere = false;
@@ -416,52 +403,52 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Row(
                 children: <Widget>[
-                  RoundButton(
-                      'AC', _listBackground[0], _listColorsFonts[0], onClear),
-                  RoundButtonIcon('plusminus', MyCustomIcons.plusMinusIcon,
+                  ClearButton(
+                      clear, _listBackground[0], _listColorsFonts[0], onClear),
+                  NoOperatorButton(MyCustomIcons.plusMinusIcon,
                       _listBackground[0], _listColorsFonts[0], onPlusMinus),
-                  RoundButtonIcon('', MyCustomIcons.percentSecIcon,
+                  NoOperatorButton(MyCustomIcons.percentSecIcon,
                       _listBackground[0], _listColorsFonts[0], onPercentage),
-                  RoundButtonIcon('/', MyCustomIcons.divideIcon,
+                  OperatorButton(34.0, '/', MyCustomIcons.divideIcon,
                       _listBackground[1], _listColorsFonts[1], onOperator),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
               Row(
                 children: <Widget>[
-                  RoundButton(
+                  StringButton(
                       '7', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButton(
+                  StringButton(
                       '8', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButton(
+                  StringButton(
                       '9', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButtonIcon('*', Icons.clear, _listBackground[1],
+                  OperatorButton(38.0, '*', Icons.clear, _listBackground[1],
                       _listColorsFonts[1], onOperator),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
               Row(
                 children: <Widget>[
-                  RoundButton(
+                  StringButton(
                       '4', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButton(
+                  StringButton(
                       '5', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButton(
+                  StringButton(
                       '6', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButtonIcon('-', MyCustomIcons.minusIcon,
+                  OperatorButton(38.0, '-', MyCustomIcons.minusIcon,
                       _listBackground[1], _listColorsFonts[1], onOperator),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
               Row(
                 children: <Widget>[
-                  RoundButton(
+                  StringButton(
                       '1', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButton(
+                  StringButton(
                       '2', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButton(
+                  StringButton(
                       '3', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButtonIcon('+', Icons.add, _listBackground[1],
+                  OperatorButton(38.0, '+', Icons.add, _listBackground[1],
                       _listColorsFonts[1], onOperator),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -470,10 +457,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   ZeroButton(
                       '0', _listBackground[2], _listColorsFonts[1], onNumber),
-                  RoundButton(
+                  StringButton(
                       '.', _listBackground[2], _listColorsFonts[1], onDecimal),
-                  //TODO '=' - nado ubrat dlya onEqual, a tak je dlya onClear
-                  EqualButton(MyCustomIcons.equalsIcon, _listBackground[1],
+                  NoOperatorButton(MyCustomIcons.equalsIcon, _listBackground[1],
                       _listColorsFonts[1], onEqual),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,

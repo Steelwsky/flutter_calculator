@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-class DecimalButton extends StatelessWidget {
-  final String str;
+class NoOperatorButton extends StatelessWidget {
+  NoOperatorButton(this.icon, this.clrBackground, this.clrFonts, this.func);
+  final IconData icon;
   final Color clrBackground;
   final Color clrFonts;
   final Size size = Size(80.0, 80.0);
   final Function func;
-
-  DecimalButton(this.str, this.clrBackground, this.clrFonts, this.func);
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +15,12 @@ class DecimalButton extends StatelessWidget {
         child: RawMaterialButton(
           constraints: BoxConstraints.tight(size),
           onPressed: () {
-            func(str);
+            func();
           },
-          child: new Text(
-            "$str",
-            style: TextStyle(
-                fontSize: 36, color: clrFonts, fontWeight: FontWeight.w500),
+          child: new Icon(
+            this.icon,
+            color: this.clrFonts,
+            size: 26,
           ),
           shape: CircleBorder(),
           elevation: 2.0,
@@ -30,3 +29,4 @@ class DecimalButton extends StatelessWidget {
         ));
   }
 }
+

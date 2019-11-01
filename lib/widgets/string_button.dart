@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 
-class RoundButtonIcon extends StatelessWidget {
-  RoundButtonIcon(this.str, this.icon, this.clrBackground, this.clrFonts, this.func);
-  final IconData icon;
+class StringButton extends StatelessWidget {
+  final String str;
   final Color clrBackground;
   final Color clrFonts;
   final Size size = Size(80.0, 80.0);
   final Function func;
-  final String str;
 
-//  RoundButtonIcon._icon(this.icon, this.clrBackground, this.clrFonts, this.func);
-
+  StringButton(this.str, this.clrBackground, this.clrFonts, this.func);
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +18,10 @@ class RoundButtonIcon extends StatelessWidget {
           onPressed: () {
             func(str);
           },
-          child: new Icon(
-            this.icon,
-            color: this.clrFonts,
-            size: 26,
+          child: new Text(
+            "$str",
+            style: TextStyle(
+                fontSize: 36, color: clrFonts, fontWeight: FontWeight.w500),
           ),
           shape: CircleBorder(),
           elevation: 2.0,
