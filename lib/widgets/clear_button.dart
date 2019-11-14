@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class NoOperatorButton extends StatelessWidget {
-  NoOperatorButton(this._icon, this._clrBackground, this._clrFonts, this._func);
-  final IconData _icon;
+class ClearButton extends StatelessWidget {
+  ClearButton(this._str, this._clrBackground, this._clrFonts, this._func);
+  final String _str;
   final Color _clrBackground;
   final Color _clrFonts;
   final Size _size = Size(80.0, 80.0);
@@ -17,10 +17,10 @@ class NoOperatorButton extends StatelessWidget {
           onPressed: () {
             _func();
           },
-          child: new Icon(
-            this._icon,
-            color: this._clrFonts,
-            size: 26,
+          child: new Text(
+            "$_str",
+            style: TextStyle(
+                fontSize: 36, color: _clrFonts, fontWeight: FontWeight.w500),
           ),
           shape: CircleBorder(),
           elevation: 2.0,
@@ -29,4 +29,3 @@ class NoOperatorButton extends StatelessWidget {
         ));
   }
 }
-
